@@ -10,6 +10,15 @@ import (
   _ "github.com/lib/pq"
 )
 
+// AgentData ...
+type AgentData struct {
+  ID        string
+  Key       string
+  Secret    string
+  CompanyID string
+  Name      string
+}
+
 // FindAgentFromHeaders do the whole operation from 1 execution
 func FindAgentFromHeaders(headers map[string]string) (string, error) {
   var agentID, agentKey, agentSecret string
@@ -37,7 +46,7 @@ func FindAgentFromHeaders(headers map[string]string) (string, error) {
       fmt.Printf("no agent, key, or secret")
       return "", fmt.Errorf("agent.FindAgentFromHeaders: no key, secret, or id")
     }
-    agentId, err = LookupAgentID(agentKey, agentSecret)
+    agentID, err = LookupAgentID(agentKey, agentSecret)
     if err != nil {
       return "", fmt.Errorf("FindAgentFromHeaders LookupAgentId: %w", err)
     }
