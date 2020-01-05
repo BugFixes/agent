@@ -9,8 +9,8 @@ import (
   _ "github.com/lib/pq"
 )
 
-// AgentData ...
-type AgentData struct {
+// Data ...
+type Data struct {
   ID        string
   Key       string
   Secret    string
@@ -18,6 +18,7 @@ type AgentData struct {
   Name      string
 }
 
+// ConnectDetails ...
 type ConnectDetails struct {
   Host string
   Port string
@@ -63,7 +64,7 @@ func (c ConnectDetails) FindAgentFromHeaders(headers map[string]string) (string,
       fmt.Printf("Seriouslly how the fuck is it not nil\n")
     }
     if len(agentKey) == 0 || len(agentSecret) == 0 {
-      fmt.Printf("no agent, key, or secret")
+      fmt.Printf("no agent, key, or secret\n")
       return "", fmt.Errorf("agent.FindAgentFromHeaders: no key, secret, or id")
     }
     agentID, err = c.LookupAgentID(agentKey, agentSecret)

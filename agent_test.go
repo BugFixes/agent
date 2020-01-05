@@ -20,7 +20,7 @@ var connectDetails = fmt.Sprintf(
   os.Getenv("DB_PASSWORD"),
   os.Getenv("DB_DATABASE"))
 
-func injectAgent(data agent.AgentData) error {
+func injectAgent(data agent.Data) error {
   db, err := sql.Open("postgres", connectDetails)
   if err != nil {
     return fmt.Errorf("injectAgent db.open: %w", err)
@@ -74,13 +74,13 @@ func TestConnectDetails_ValidateAgentID(t *testing.T) {
 
   tests := []struct {
     name    string
-    request agent.AgentData
+    request agent.Data
     expect  bool
     err     error
   }{
     {
       name: "agentid valid",
-      request: agent.AgentData{
+      request: agent.Data{
         ID:        "ad4b99e1-dec8-4682-862a-6b017e7c7c74",
         Key:       "94365b00-c6df-483f-804e-363312750500",
         Secret:    "f7356946-5814-4b5e-ad45-0348a89576ef",
@@ -91,7 +91,7 @@ func TestConnectDetails_ValidateAgentID(t *testing.T) {
     },
     {
       name: "agentid invalid",
-      request: agent.AgentData{
+      request: agent.Data{
         ID:        "ad4b99e1-dec8-4682-862a-6b017e7c7c75",
         Key:       "94365b00-c6df-483f-804e-363312750500",
         Secret:    "f7356946-5814-4b5e-ad45-0348a89576ef",
@@ -151,13 +151,13 @@ func TestConnectDetails_LookupAgentID(t *testing.T) {
 
   tests := []struct {
     name    string
-    request agent.AgentData
+    request agent.Data
     expect  string
     err     error
   }{
     {
       name: "agentid found",
-      request: agent.AgentData{
+      request: agent.Data{
         ID:        "ad4b99e1-dec8-4682-862a-6b017e7c7c72",
         Key:       "94365b00-c6df-483f-804e-363312750500",
         Secret:    "f7356946-5814-4b5e-ad45-0348a89576ef",
@@ -215,13 +215,13 @@ func BenchmarkConnectDetails_LookupAgentID(b *testing.B) {
 
   tests := []struct {
     name    string
-    request agent.AgentData
+    request agent.Data
     expect  string
     err     error
   }{
     {
       name: "agentid found",
-      request: agent.AgentData{
+      request: agent.Data{
         ID:        "ad4b99e1-dec8-4682-862a-6b017e7c7c72",
         Key:       "94365b00-c6df-483f-804e-363312750500",
         Secret:    "f7356946-5814-4b5e-ad45-0348a89576ef",
@@ -283,13 +283,13 @@ func BenchmarkConnectDetails_ValidateAgentID(b *testing.B) {
 
   tests := []struct {
     name    string
-    request agent.AgentData
+    request agent.Data
     expect  bool
     err     error
   }{
     {
       name: "agentid valid",
-      request: agent.AgentData{
+      request: agent.Data{
         ID:        "ad4b99e1-dec8-4682-862a-6b017e7c7c74",
         Key:       "94365b00-c6df-483f-804e-363312750500",
         Secret:    "f7356946-5814-4b5e-ad45-0348a89576ef",
@@ -300,7 +300,7 @@ func BenchmarkConnectDetails_ValidateAgentID(b *testing.B) {
     },
     {
       name: "agentid invalid",
-      request: agent.AgentData{
+      request: agent.Data{
         ID:        "ad4b99e1-dec8-4682-862a-6b017e7c7c75",
         Key:       "94365b00-c6df-483f-804e-363312750500",
         Secret:    "f7356946-5814-4b5e-ad45-0348a89576ef",
