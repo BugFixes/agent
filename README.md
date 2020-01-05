@@ -22,3 +22,6 @@ func main() {
     fmt.Printf("AgentID: %+v\n", agentID)
 }
 ```
+
+## Build Status
+[![Actions Status](https://github.com/BugFixes/agent/workflows/Test%20Push/badge.svg)](https://github.com/bugfixes/agent/actions)
