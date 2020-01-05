@@ -16,7 +16,11 @@ jobs:
           fetch-depth: 1
       - name: install golangci-lint
         run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.21.0
-      - name: lint
+      - name: install golint
+        run: go get -u golang.org/x/lint/golint
+      - name: golint
+        run: $(go env GOPATH)/bin/golint -set_exit_status ./...
+      - name: golangci-lint
         run: $(go env GOPATH)/bin/golangci-lint run
 
   test:
