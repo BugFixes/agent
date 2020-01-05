@@ -19,6 +19,14 @@ type AgentData struct {
   Name      string
 }
 
+var connectDetails = fmt.Sprintf(
+  "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+  os.Getenv("DB_HOSTNAME"),
+  os.Getenv("DB_PORT"),
+  os.Getenv("DB_USERNAME"),
+  os.Getenv("DB_PASSWORD"),
+  os.Getenv("DB_DATABASE"))
+
 // FindAgentFromHeaders do the whole operation from 1 execution
 func FindAgentFromHeaders(headers map[string]string) (string, error) {
   var agentID, agentKey, agentSecret string
@@ -67,15 +75,7 @@ func FindAgentFromHeaders(headers map[string]string) (string, error) {
 func ValidateAgentID(agentID string) (bool, error) {
   agentFound := false
 
-  db, err := sql.Open(
-    "postgres",
-    fmt.Sprintf(
-      "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-      os.Getenv("DB_HOSTNAME"),
-      os.Getenv("DB_PORT"),
-      os.Getenv("DB_USERNAME"),
-      os.Getenv("DB_PASSWORD"),
-      os.Getenv("DB_DATABASE")))
+  db, err := sql.Open("postgres", connectDetails)
   if err != nil {
     return agentFound, fmt.Errorf("ValidateAgentId db.open: %w", err)
   }
@@ -103,15 +103,7 @@ func ValidateAgentID(agentID string) (bool, error) {
 func LookupAgentID(key, secret string) (string, error) {
   agentID := ""
 
-  db, err := sql.Open(
-    "postgres",
-    fmt.Sprintf(
-      "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-      os.Getenv("DB_HOSTNAME"),
-      os.Getenv("DB_PORT"),
-      os.Getenv("DB_USERNAME"),
-      os.Getenv("DB_PASSWORD"),
-      os.Getenv("DB_DATABASE")))
+  db, err := sql.Open("postgres", connectDetails)
   if err != nil {
     return agentID, fmt.Errorf("LoopkupAgentId db.open: %w", err)
   }
