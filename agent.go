@@ -51,9 +51,13 @@ func (c ConnectDetails) FindAgentFromHeaders(headers map[string]string) (string,
       agentID = v
     case "x-api-key":
       agentKey = v
-    case "x-agent-secret":
+    case "x-api-secret":
       agentSecret = v
     }
+  }
+
+  if agentID == "" && agentKey == "" && agentSecret == "" {
+    return "", fmt.Errorf("agent.FindAgentFromHeaders: no agentID, agentKey, or agentSecret")
   }
 
   if agentID == "" {
@@ -64,8 +68,13 @@ func (c ConnectDetails) FindAgentFromHeaders(headers map[string]string) (string,
       fmt.Printf("Seriouslly how the fuck is it not nil\n")
     }
     if len(agentKey) == 0 || len(agentSecret) == 0 {
-      fmt.Printf("no agent, key, or secret\n")
-      return "", fmt.Errorf("agent.FindAgentFromHeaders: no key, secret, or id")
+      if len(agentKey) == 0 {
+        return "", fmt.Errorf("agent.FindAgentFromHeaders: no key")
+      }
+
+      if len(agentSecret) == 0 {
+        return "", fmt.Errorf("agent.FindAgentFromHeaders: no secret")
+      }
     }
     agentID, err = c.LookupAgentID(agentKey, agentSecret)
     if err != nil {
