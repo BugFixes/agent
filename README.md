@@ -1,31 +1,24 @@
-# bugfixes_agent
+# BugFix.es Agent
 
-Short project description goes here.
+This is the agent library, just for splitting purposes so it can be used in multiple projects
 
-## Getting Started
+## Example
 
-Download links:
+```go
+package main
 
-SSH clone URL: ssh://git@git.jetbrains.space/chewedfeed/bugfixes_agent.git
+import (
+    "fmt"
 
-HTTPS clone URL: https://git.jetbrains.space/chewedfeed/bugfixes_agent.git
+    "github.com/bugfixes/agent"
+)
 
+func main() {
+    agentID, err := agent.LookUpAgentID("tester", "tester")
+    if err != nil {
+        fmt.Printf("AgentLookup Failed: %+v\n", err)
+    }
 
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-
-## Prerequisites
-
-What things you need to install the software and how to install them.
-
+    fmt.Printf("AgentID: %+v\n", agentID)
+}
 ```
-Examples
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a production system.
-
-## Resources
-
-Add links to external resources for this project, such as CI server, bug tracker, etc.
