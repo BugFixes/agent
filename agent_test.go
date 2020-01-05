@@ -64,7 +64,7 @@ func deleteAgent(id string) error {
   return nil
 }
 
-func TestValidateAgentID(t *testing.T) {
+func TestConnectDetails_ValidateAgentID(t *testing.T) {
   if os.Getenv("GITHUB_ACTOR") == "" {
     err := godotenv.Load()
     if err != nil {
@@ -107,9 +107,19 @@ func TestValidateAgentID(t *testing.T) {
     t.Errorf("injection err: %w", injErr)
   }
 
+  c := agent.ConnectDetails{
+    Full:  fmt.Sprintf(
+      "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+      os.Getenv("DB_HOSTNAME"),
+      os.Getenv("DB_PORT"),
+      os.Getenv("DB_USERNAME"),
+      os.Getenv("DB_PASSWORD"),
+      os.Getenv("DB_DATABASE")),
+  }
+
   for _, test := range tests {
     t.Run(test.name, func(t *testing.T) {
-      resp, err := agent.ValidateAgentID(test.request.ID)
+      resp, err := c.ValidateAgentID(test.request.ID)
       passed := assert.IsType(t, test.err, err)
       if !passed {
         t.Errorf("agent err: %w", err)
@@ -131,7 +141,7 @@ func TestValidateAgentID(t *testing.T) {
   }
 }
 
-func TestLookupAgentID(t *testing.T) {
+func TestConnectDetails_LookupAgentID(t *testing.T) {
   if os.Getenv("GITHUB_ACTOR") == "" {
     err := godotenv.Load()
     if err != nil {
@@ -163,9 +173,19 @@ func TestLookupAgentID(t *testing.T) {
     t.Errorf("injection err: %w", injErr)
   }
 
+  c := agent.ConnectDetails{
+    Full:  fmt.Sprintf(
+      "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+      os.Getenv("DB_HOSTNAME"),
+      os.Getenv("DB_PORT"),
+      os.Getenv("DB_USERNAME"),
+      os.Getenv("DB_PASSWORD"),
+      os.Getenv("DB_DATABASE")),
+  }
+
   for _, test := range tests {
     t.Run(test.name, func(t *testing.T) {
-      resp, err := agent.LookupAgentID(test.request.Key, test.request.Secret)
+      resp, err := c.LookupAgentID(test.request.Key, test.request.Secret)
       passed := assert.IsType(t, test.err, err)
       if !passed {
         t.Errorf("agent err: %w", err)
@@ -183,7 +203,7 @@ func TestLookupAgentID(t *testing.T) {
   }
 }
 
-func BenchmarkLookupAgentID(b *testing.B) {
+func BenchmarkConnectDetails_LookupAgentID(b *testing.B) {
   b.ReportAllocs()
 
   if os.Getenv("GITHUB_ACTOR") == "" {
@@ -219,10 +239,20 @@ func BenchmarkLookupAgentID(b *testing.B) {
 
   b.ResetTimer()
 
+  c := agent.ConnectDetails{
+    Full:  fmt.Sprintf(
+      "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+      os.Getenv("DB_HOSTNAME"),
+      os.Getenv("DB_PORT"),
+      os.Getenv("DB_USERNAME"),
+      os.Getenv("DB_PASSWORD"),
+      os.Getenv("DB_DATABASE")),
+  }
+
   for _, test := range tests {
     b.Run(test.name, func(t *testing.B) {
       t.StartTimer()
-      resp, err := agent.LookupAgentID(test.request.Key, test.request.Secret)
+      resp, err := c.LookupAgentID(test.request.Key, test.request.Secret)
       passed := assert.IsType(t, test.err, err)
       if !passed {
         t.Errorf("validator err: %w", err)
@@ -241,7 +271,7 @@ func BenchmarkLookupAgentID(b *testing.B) {
   }
 }
 
-func BenchmarkValidateAgentID(b *testing.B) {
+func BenchmarkConnectDetails_ValidateAgentID(b *testing.B) {
   b.ReportAllocs()
 
   if os.Getenv("GITHUB_ACTOR") == "" {
@@ -288,11 +318,21 @@ func BenchmarkValidateAgentID(b *testing.B) {
 
   b.ResetTimer()
 
+  c := agent.ConnectDetails{
+    Full:  fmt.Sprintf(
+      "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+      os.Getenv("DB_HOSTNAME"),
+      os.Getenv("DB_PORT"),
+      os.Getenv("DB_USERNAME"),
+      os.Getenv("DB_PASSWORD"),
+      os.Getenv("DB_DATABASE")),
+  }
+
   for _, test := range tests {
     b.Run(test.name, func(t *testing.B) {
       t.StartTimer()
 
-      resp, err := agent.ValidateAgentID(test.request.ID)
+      resp, err := c.ValidateAgentID(test.request.ID)
       passed := assert.IsType(t, test.err, err)
       if !passed {
         t.Errorf("agent err: %w", err)

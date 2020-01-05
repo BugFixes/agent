@@ -3,7 +3,6 @@ package agent
 import (
   "database/sql"
   "fmt"
-  "os"
   "strings"
 
   // DB drivers are blank
@@ -19,16 +18,29 @@ type AgentData struct {
   Name      string
 }
 
-var connectDetails = fmt.Sprintf(
-  "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-  os.Getenv("DB_HOSTNAME"),
-  os.Getenv("DB_PORT"),
-  os.Getenv("DB_USERNAME"),
-  os.Getenv("DB_PASSWORD"),
-  os.Getenv("DB_DATABASE"))
+type ConnectDetails struct {
+  Host string
+  Port string
+  Username string
+  Password string
+  Database string
+
+  Full string
+}
 
 // FindAgentFromHeaders do the whole operation from 1 execution
-func FindAgentFromHeaders(headers map[string]string) (string, error) {
+func (c ConnectDetails) FindAgentFromHeaders(headers map[string]string) (string, error) {
+  if c.Full == "" {
+    c.Full = fmt.Sprintf(
+      "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+      c.Host,
+      c.Port,
+      c.Username,
+      c.Password,
+      c.Database,
+    )
+  }
+
   var agentID, agentKey, agentSecret string
   for h, v := range headers {
     hl := strings.ToLower(h)
@@ -54,12 +66,12 @@ func FindAgentFromHeaders(headers map[string]string) (string, error) {
       fmt.Printf("no agent, key, or secret")
       return "", fmt.Errorf("agent.FindAgentFromHeaders: no key, secret, or id")
     }
-    agentID, err = LookupAgentID(agentKey, agentSecret)
+    agentID, err = c.LookupAgentID(agentKey, agentSecret)
     if err != nil {
       return "", fmt.Errorf("FindAgentFromHeaders LookupAgentId: %w", err)
     }
   } else {
-    valid, err := ValidateAgentID(agentID)
+    valid, err := c.ValidateAgentID(agentID)
     if err != nil {
       return "", fmt.Errorf("FindAgentFromHeaders ValidateAgentId: %w", err)
     }
@@ -72,10 +84,10 @@ func FindAgentFromHeaders(headers map[string]string) (string, error) {
 }
 
 // ValidateAgentID find out if the agentID is real
-func ValidateAgentID(agentID string) (bool, error) {
+func (c ConnectDetails)ValidateAgentID(agentID string) (bool, error) {
   agentFound := false
 
-  db, err := sql.Open("postgres", connectDetails)
+  db, err := sql.Open("postgres", c.Full)
   if err != nil {
     return agentFound, fmt.Errorf("ValidateAgentId db.open: %w", err)
   }
@@ -100,10 +112,10 @@ func ValidateAgentID(agentID string) (bool, error) {
 }
 
 // LookupAgentID find the agentid from the key and secret
-func LookupAgentID(key, secret string) (string, error) {
+func (c ConnectDetails)LookupAgentID(key, secret string) (string, error) {
   agentID := ""
 
-  db, err := sql.Open("postgres", connectDetails)
+  db, err := sql.Open("postgres", c.Full)
   if err != nil {
     return agentID, fmt.Errorf("LoopkupAgentId db.open: %w", err)
   }
